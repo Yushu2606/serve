@@ -1,0 +1,61 @@
+name: Build artifact
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        version: 
+          - "8.0"
+          - "10.0"
+        os:
+          - winnt
+          - linux
+          - darwin
+        arch:
+          - amd64
+          - aarch64
+        include:
+          - arch: aarch64
+            os: darwin
+            plat: macos-latest
+          - arch: amd64
+            os: darwin
+            plat: macos-13
+          - arch: aarch64
+            os: linux
+            plat: ubuntu-24.04-arm
+          - arch: amd64
+            os: linux
+            plat: ubuntu-latest
+          - os: winnt
+            plat: windows-latest
+          - arch: aarch64
+            builda: arm64
+          - arch: amd64
+            builda: x64
+
+    runs-on: ${{ matrix.plat }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: >
+          dotnet publish
+          -o artifact
+          -f net${{ matrix.version }}
+          -a ${{ matrix.builda }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: artifact/
+          name: serve-${{ matrix.os }}-${{ matrix.arch }}-net${{ matrix.version }}
