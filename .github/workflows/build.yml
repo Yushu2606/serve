@@ -16,26 +16,26 @@ jobs:
           - linux
           - darwin
         arch:
-          - amd64
+          - x86_64
           - aarch64
         include:
           - arch: aarch64
             os: darwin
             plat: macos-latest
-          - arch: amd64
+          - arch: x86_64
             os: darwin
             plat: macos-13
           - arch: aarch64
             os: linux
             plat: ubuntu-24.04-arm
-          - arch: amd64
+          - arch: x86_64
             os: linux
             plat: ubuntu-latest
           - os: winnt
             plat: windows-latest
           - arch: aarch64
             builda: arm64
-          - arch: amd64
+          - arch: x86_64
             builda: x64
 
     runs-on: ${{ matrix.plat }}
